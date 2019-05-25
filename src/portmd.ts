@@ -4,20 +4,22 @@ import path from "path";
 import puppeteer from "puppeteer";
 
 (async () => {
-	await main();
+	try {
+		debug("Reading input file");
+		const { name, content } = getInputFile();
+		debug("Parsing markdown");
+		const markdown = toMarkdown(content);
+		debug("Creating pdf");
+		const pdf = await toPdf(markdown);
+		debug("Writing to output file");
+		fs.writeFileSync(`${name}.pdf`, pdf);
+		debug("done");
+	} catch (error) {
+		log(`Error: ${error.message}`);
+		debug(error);
+		process.exit(1);
+	}
 })();
-
-async function main() {
-	debug("Reading input file");
-	const { name, content } = getInputFile();
-	debug("Parsing markdown");
-	const markdown = toMarkdown(content);
-	debug("Creating pdf");
-	const pdf = await toPdf(markdown);
-	debug("Writing to output file");
-	fs.writeFileSync(`${name}.pdf`, pdf);
-	debug("done");
-}
 
 function getInputFile() {
 	debug("Getting input file");
@@ -81,4 +83,8 @@ function debug(...args: unknown[]) {
 	if (process.argv.some(arg => arg === "--debug" || arg === "-d")) {
 		console.log(...args);
 	}
+}
+
+function log(...args: unknown[]) {
+	console.log(...args);
 }
