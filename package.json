@@ -9,9 +9,11 @@
   "author": "Andreas Hallberg",
   "license": "UNLICENSED",
   "dependencies": {
+    "marked": "^0.6.2",
     "puppeteer": "^1.17.0"
   },
   "devDependencies": {
+    "@types/marked": "^0.6.5",
     "@types/puppeteer": "^1.12.4"
   }
 }

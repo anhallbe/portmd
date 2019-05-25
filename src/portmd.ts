@@ -1,5 +1,5 @@
 import fs from "fs";
-import os from "os";
+import marked from "marked";
 import path from "path";
 import puppeteer from "puppeteer";
 
@@ -8,9 +8,15 @@ import puppeteer from "puppeteer";
 })();
 
 async function main() {
+	debug("Reading input file");
 	const { name, content } = getInputFile();
-	const pdf = await toPdf(Buffer.from(content));
+	debug("Parsing markdown");
+	const markdown = toMarkdown(content);
+	debug("Creating pdf");
+	const pdf = await toPdf(markdown);
+	debug("Writing to output file");
 	fs.writeFileSync(`${name}.pdf`, pdf);
+	debug("done");
 }
 
 function getInputFile() {
@@ -32,19 +38,15 @@ function getInputFile() {
 		throw new Error(`Input file ${inputFile} does not seem to be markdown`);
 	}
 
-	debug("reading content");
 	const content = fs.readFileSync(inputFile);
-	debug("content is", content.toString())
-	debug("reading basename");
 	const name = path.basename(inputFile, ".md");
-	debug(`basename is ${name}`);
 	return { name, content };
 }
 
 async function toPdf(content: Buffer): Promise<Buffer> {
 	const browser = await puppeteer.launch();
+	const tempFilePath = writeTempFile(content);
 	try {
-		const tempFilePath = writeTempFile(content);
 		const pages = await browser.pages();
 		const page = pages[0];
 		await page.goto(`file://${tempFilePath}`);
@@ -52,17 +54,31 @@ async function toPdf(content: Buffer): Promise<Buffer> {
 		return pdf;
 	} finally {
 		await browser.close();
+		removeTempFile(tempFilePath);
 	}
+}
+
+function toMarkdown(content: Buffer): Buffer {
+	const parsed = marked.parse(content.toString(), { gfm: true, tables: true });
+	return Buffer.from(parsed);
 }
 
 type TempFilePath = string;
 
 function writeTempFile(content: Buffer): TempFilePath {
-	const filePath = path.resolve(os.tmpdir(), "portmd_tmp.html");
+	const filePath = path.resolve("portmd_tmp.html");
+	debug(`Writing temporary file ${filePath}`);
 	fs.writeFileSync(filePath, content);
 	return filePath;
 }
 
+function removeTempFile(filePath: TempFilePath) {
+	debug(`Removing temporary file ${filePath}`);
+	fs.unlinkSync(filePath);
+}
+
 function debug(...args: unknown[]) {
-	console.log(...args);
+	if (process.argv.some(arg => arg === "--debug" || arg === "-d")) {
+		console.log(...args);
+	}
 }
