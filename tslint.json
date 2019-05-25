@@ -1,0 +1,13 @@
+{
+    "rules": {
+        "semicolon": true,
+        "indent": [
+            true,
+            "tabs"
+        ],
+        "quotemark": [
+            true,
+            "double"
+        ]
+    }
+}

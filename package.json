@@ -1,0 +1,17 @@
+{
+  "name": "portmd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andreas Hallberg",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "puppeteer": "^1.17.0"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^1.12.4"
+  }
+}
