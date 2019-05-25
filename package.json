@@ -4,10 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "git clean -fxd ./dist",
+    "build": "tsc",
+    "build:clean": "npm run clean && npm run build",
+    "package": "npm run build:clean && npm pack"
   },
   "author": "Andreas Hallberg",
   "license": "Apache-2.0",
+  "bin": {
+    "portmd": "./dist/portmd.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "dependencies": {
     "marked": "^0.6.2",
     "puppeteer": "^1.17.0"
