@@ -17,3 +17,4 @@ If you want to build and run the tool from the source, do the following:
 4. Run the program
    - Without installing: `node ./dist/portmd README.md`
    - Install globally: `npm install -g .` followed by `portmd README.md`
+5. Open the newly created `README.pdf` in your PDF reader.
