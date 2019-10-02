@@ -7,6 +7,9 @@ import puppeteer from "puppeteer";
 
 (async () => {
 	try {
+		if (flag("--help") || flag("-h")) {
+			printUsageAndExit();
+		}
 		debug("Reading input file");
 		const { name, content } = getInputFile();
 		debug("Parsing markdown");
@@ -19,7 +22,7 @@ import puppeteer from "puppeteer";
 	} catch (error) {
 		log(`Error: ${error.message}`);
 		debug(error);
-		process.exit(1);
+		printUsageAndExit();
 	}
 })();
 
@@ -81,8 +84,25 @@ function removeTempFile(filePath: TempFilePath) {
 	fs.unlinkSync(filePath);
 }
 
+function printUsageAndExit() {
+	console.log("Usage:");
+	console.log("\tportmd [options] <markdownfile.md>");
+	console.log("");
+	console.log("Options:");
+	console.log("\t--help, -h\tPrint usage");
+	console.log("\t--debug, -d\tPrint debug information");
+	console.log("");
+	console.log("Example:");
+	console.log("\tportmd README.md");
+	process.exit(1);
+}
+
+function flag(flag: string) {
+	return process.argv.includes(flag);
+}
+
 function debug(...args: unknown[]) {
-	if (process.argv.some(arg => arg === "--debug" || arg === "-d")) {
+	if (flag("--debug") || flag("-d")) {
 		console.log(...args);
 	}
 }
