@@ -19,7 +19,7 @@
     "README.md"
   ],
   "dependencies": {
-    "marked": "^0.6.2",
+    "marked": "^4.0.10",
     "puppeteer": "^1.17.0"
   },
   "devDependencies": {
